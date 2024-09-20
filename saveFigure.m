@@ -1,0 +1,65 @@
+function saveFigure(folderName, fileName, saveOn)
+% =======================================================
+% Function to save the current figure to a specified folder.
+% Version:      1 
+% Written by:   Niels Kuipers
+%
+% Parameters:
+%   folderName - folder name to save to (relative or full path)
+%   fileName   - file name for the figure (without extension)
+%   saveOn     - toggles the save to be on ('on' or 'off')
+% =======================================================
+    if strcmp(saveOn, 'on') % Check if saving is enabled
+        
+        % Construct full path using current working directory
+        fullFolderPath = fullfile(pwd, folderName);
+        
+        % Check if folder exists and create if it doesn't
+        if ~exist(fullFolderPath, 'dir')
+            try
+                status = mkdir(fullFolderPath); % Create the folder if it doesn't exist
+                if status
+                    fprintf('Directory created successfully: %s\n', fullFolderPath);
+                else
+                    error('Failed to create directory: %s', fullFolderPath);
+                end
+            catch ME
+                fprintf('Error creating directory: %s\n', ME.message);
+                rethrow(ME); % Rethrow exception if folder creation fails
+            end
+        else
+            fprintf('Directory already exists: %s\n', fullFolderPath);
+        end
+        
+        % Set figure properties for saving
+        set(gcf, 'Units', 'inches');
+        screenposition = get(gcf, 'Position');
+        set(gcf, 'PaperPosition', [0 0 screenposition(3:4)], 'PaperSize', [screenposition(3:4)]);
+        
+        % Construct the full file path
+        fileNames = strcat(fileName, '.pdf');
+        filePath = fullfile(fullFolderPath, fileNames);
+        fprintf('Current working directory: %s\n', pwd);
+        fprintf('Full file path to save: %s\n', filePath);
+        
+        % Check if we have write access to the target directory
+        [fid, errmsg] = fopen(filePath, 'w');
+        if fid == -1
+            error('Unable to write to the folder: %s\nError: %s', fullFolderPath, errmsg);
+        else
+            fclose(fid); % Close the file immediately since it was just a test
+        end
+        
+        % Try saving the figure
+        try
+            % Save the figure as a PDF
+            print(gcf, '-dpdf', '-vector', filePath);
+            fprintf('Figure saved successfully to %s\n', filePath);
+        catch ME
+            fprintf('Error occurred while saving the figure: %s\n', ME.message);
+            rethrow(ME); % Rethrow the caught exception
+        end
+    else
+        fprintf('Save operation is turned off. No figure was saved.\n');
+    end
+end

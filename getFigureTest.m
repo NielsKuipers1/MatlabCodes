@@ -1,55 +1,36 @@
 close all;
 clear;
-clc; 
+clc;
 
-% getFigure example script
-x=0:0.05:1;
-y=sin(x);
+% =======================================================
+% Script to generate and save a sine wave plot with specified color scheme.
+% Version: 1
+% Written by: Niels Kuipers
+% =======================================================
 
-% Regular plot
-figureHandel = figure; 
-plot(x,y,'o','MarkerSize',10,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[50,130,188]/256,'LineWidth',1.5) % Data plot 
-hold on
-plot(x,y,'color',[50,130,188]/256) % 'Best fit' example
-title('')
-xlabel('$x$')
-ylabel('$y$')
-lgd = legend('$sin(x)$');
-lgd.Orientation = 'vertical';
-lgd.Box = 'off';
-lgd.FontSize = 17;
-lgd.Location = 'northwest';
-getFigure(figureHandel,0,0)
-hold off
+% addpath('<path_to_folder>') % Add this to a current directory
 
-% LogLog scale
-figureHandel = figure; 
-loglog(x,y,'o','MarkerSize',10,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[19,166,136]/256,'LineWidth',1.5) % Data plot 
-hold on
-loglog(x,y,'color',[19,166,136]/256) % 'Best fit' example
-title('')
-xlabel('$x$')
-ylabel('$y$')
-lgd = legend('$sin(x)$');
-lgd.Orientation = 'vertical';
-lgd.Box = 'off';
-lgd.FontSize = 17;
-lgd.Location = 'northwest';
-getFigure(figureHandel,0,0)
-hold off 
+folderName = 'figures'; % Folder name to store figures
+figOn = 'on'; % Toggle to show figures
 
-% Legend on the outside 
-figureHandel = figure; 
-plot(x,y,'o','MarkerSize',10,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[230,58,33]/256,'LineWidth',1.5) % Data plot 
-hold on
-plot(x,y,'color',[230,58,33]/256) % 'Best fit' example
-title('')
-xlabel('$x$')
-ylabel('$y$')
-lgd = legend('$sin(x)$');
-lgd.Orientation = 'vertical';
-lgd.Box = 'off';
-lgd.FontSize = 17;
-lgd.Location = 'eastoutside';
-getFigure(figureHandel,1,0)
-hold off
+% Arbitrary dataset
+x = 1:0.1:10;
+y = sin(x);
+
+fileName = 'plotfigure_test'; % Name of the plot file
+color = getColors([1, 6, 3]); % Get color scheme
+
+figureHandel = figure('Visible', figOn); % Initialize figure
+hold on;
+plot(x, y, 'Color', color(2, :), 'LineWidth', 1.5) % Plot figure with specified color
+xlabel('t [$s$]') % X-axis label
+ylabel('y [$ms^{-2}$]') % Y-axis label
+title('') % Title (empty)
+% Legend
+lgd = legend('data');
+lgd.Box = 'off'; % Remove box around legend
+lgd.Location = 'northeast'; % Set legend location
+getFigure(figureHandel) % Converts figure to be a LaTeX figure
+axis equal; % Set equal scaling for both axes
+saveFigure(folderName, fileName, 'on') % Save figure
+hold off; % Release the figure
